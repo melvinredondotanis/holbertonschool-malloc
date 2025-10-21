@@ -1,14 +1,13 @@
 #include <unistd.h>
 #include "malloc.h"
+#include <stddef.h>
 
 #define ALIGN(size) (((size) + sizeof(size_t) - 1) & ~(sizeof(size_t) - 1))
 
 /* Pointer to the start of the allocated heap */
-static void *last_break;
-last_break = NULL;
+static void *last_break = NULL;
 /* Remaining memory in the current page */
-static size_t avail_mem;
-avail_mem = 0; /* Fuck Betty! */
+static size_t avail_mem = 0;
 
 /**
  * _malloc - allocate memory using a naive page-based strategy
