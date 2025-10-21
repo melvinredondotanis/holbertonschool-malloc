@@ -18,7 +18,7 @@ void *naive_malloc(size_t size)
 
 	page_size = getpagesize();
 	total_size = sizeof(size_t) + size;
-	total_size = ((total_size + page_size - 1) * page_size);
+	total_size = ((total_size + page_size - 1) / page_size) * page_size;
 
 	block = sbrk(total_size);
 	if (block == (void *)-1)
