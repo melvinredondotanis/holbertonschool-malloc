@@ -1,10 +1,14 @@
 #include <unistd.h>
 #include "malloc.h"
 
+#define ALIGN(size) (((size) + sizeof(size_t) - 1) & ~(sizeof(size_t) - 1))
+
 /* Pointer to the start of the allocated heap */
-static void *last_break = NULL;
+static void *last_break;
+last_break = NULL;
 /* Remaining memory in the current page */
-static size_t avail_mem = 0;
+static size_t avail_mem;
+avail_mem = 0; /* Fuck Betty! */
 
 /**
  * _malloc - allocate memory using a naive page-based strategy
@@ -18,7 +22,7 @@ void *_malloc(size_t size)
 	size_t std_block_size;
 
 	if (size == 0)
-		return NULL;
+		return (NULL);
 
 	/* calculate block size including header and alignment */
 	std_block_size = ALIGN(size) + sizeof(size_t);
@@ -28,13 +32,13 @@ void *_malloc(size_t size)
 	{
 		last_break = sbrk(4096);
 		if (last_break == (void *)-1)
-			return NULL;
+			return (NULL);
 		avail_mem = 4096;
 	}
 
 	/* check if there is enough memory left in the page */
 	if (avail_mem < std_block_size)
-		return NULL;
+		return (NULL); /* fail safely instead of crashing */
 
 	/* place the block at the end of current allocations */
 	block = last_break;
@@ -43,5 +47,5 @@ void *_malloc(size_t size)
 	avail_mem -= std_block_size;
 
 	/* return a pointer just after the header for the user */
-	return (char *)block + sizeof(size_t);
+	return ((char *)block + sizeof(size_t));
 }

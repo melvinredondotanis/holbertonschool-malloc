@@ -1,5 +1,8 @@
 #include "malloc.h"
 
+#define ALIGN(size) \
+	(((size) + sizeof(size_t) - 1) / sizeof(size_t) * sizeof(size_t))
+
 /**
  * find_next_block - Find the next available block
  * @block_ptr: Pointer to the initial block of memory
